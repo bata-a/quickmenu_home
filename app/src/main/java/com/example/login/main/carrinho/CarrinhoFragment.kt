@@ -1,60 +1,127 @@
 package com.example.login.main.carrinho
 
+import android.content.Context // Import necessário para onAttach
+import android.icu.text.NumberFormat
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.login.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.login.databinding.FragmentCarrinhoBinding
+import java.util.Locale
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+// Interface para o Fragment avisar o Adapter sobre remoção
+interface CarrinhoActionsListener {
+    fun onRemoverItem(position: Int)
+}
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CarrinhoFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class CarrinhoFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+// Interface para o Fragment avisar a Activity sobre a mudança do Total
+interface TotalUpdateListener {
+    fun onTotalChanged(novoTotal: Double, totalItens: Int)
+}
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+class CarrinhoFragment : Fragment(), CarrinhoActionsListener {
+
+    private var _binding: FragmentCarrinhoBinding? = null
+    private val binding get() = _binding!!
+
+    private lateinit var carrinhoAdapter: CarrinhoAdapter
+    // Torna a lista de itens uma propriedade da classe
+    private val listaItens = mutableListOf<ItemCarrinho>()
+
+    // Propriedade para se comunicar com a Activity
+    private lateinit var totalListener: TotalUpdateListener
+
+    // Garante que a Activity implemente a interface e armazena a referência
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is TotalUpdateListener) {
+            totalListener = context
+        } else {
+            throw RuntimeException("$context must implement TotalUpdateListener")
         }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_carrinho, container, false)
+    ): View {
+        _binding = FragmentCarrinhoBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CarrinhoFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CarrinhoFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // 1. Inicializa a lista de dados (populando, já que agora é uma propriedade)
+        listaItens.add(ItemCarrinho("1", "Bolo Red Velvet", 50.00, 1, 3))
+        listaItens.add(ItemCarrinho("2", "Brigadeiro de morango", 9.00, 1, 3))
+
+        // 2. Cria e INICIALIZA a instância do seu adapter
+        carrinhoAdapter = CarrinhoAdapter(listaItens, this)
+
+        // 3. Configura a RecyclerView
+        binding.rvCarrinhoItens.layoutManager = LinearLayoutManager(context)
+        binding.rvCarrinhoItens.adapter = carrinhoAdapter
+
+        // 4. Lógica de clique de adição (na Activity)
+
+
+        binding.btnAddItemTeste.setOnClickListener {
+            val novoItem = ItemCarrinho(
+                id = "ID_${System.currentTimeMillis()}",
+                nome = "Item Adicionado (TESTE)",
+                preco = 10.00,
+                quantidade = 1,
+                imagem = 3
+            )
+
+            carrinhoAdapter.adicionarItem(novoItem)
+
+            // NOTIFICA A ACTIVITY SOBRE A MUDANÇA
+            onTotalChanged(calcularTotal(), listaItens.size)
+        }
+
+        // CÁLCULO INICIAL: Envia o total na primeira vez que o Fragment é carregado
+        onTotalChanged(calcularTotal(), listaItens.size)
+    }
+
+    fun onTotalChanged(novoTotal: Double, totalItens: Int) {
+
+        // 1. Configuração do formatador de moeda (Exemplo: Real Brasileiro)
+        val formatador = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
+
+        // 2. ATUALIZAÇÃO DO TOTAL USANDO BINDING
+        // Acessa as TextViews diretamente pelo objeto 'binding'
+        binding.total.text = formatador.format(novoTotal)
+
+        // 3. ATUALIZAÇÃO DA CONTAGEM DE ITENS USANDO BINDING
+        binding.totalTitle.text = "Total ($totalItens)"
+    }
+
+    // Implementação da função da Interface CarrinhoActionsListener
+    override fun onRemoverItem(position: Int) {
+        // 1. Executa a remoção no Adapter
+        carrinhoAdapter.removerItem(position)
+
+        // 2. NOTIFICA A ACTIVITY SOBRE A MUDANÇA
+        atualizarTotalNaActivity()
+    }
+
+    // Função para calcular o total
+    private fun calcularTotal(): Double {
+        return listaItens.sumOf { it.preco * it.quantidade }
+    }
+
+    // Função auxiliar para enviar a atualização
+    private fun atualizarTotalNaActivity() {
+        val novoTotal = calcularTotal()
+        totalListener.onTotalChanged(novoTotal, listaItens.size)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
