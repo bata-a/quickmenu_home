@@ -8,25 +8,25 @@
 
     <fragment
         android:id="@+id/usuarioFragment"
-        android:name="com.example.login.main.usuario.UsuarioFragment"
+        android:name="com.QuickMenu.mobile.main.usuario.UsuarioFragment"
         android:label="Minha Conta"
         tools:layout="@layout/fragment_usuario" />
 
     <fragment
         android:id="@+id/carrinhoFragment"
-        android:name="com.example.login.main.carrinho.CarrinhoFragment"
+        android:name="com.QuickMenu.mobile.main.carrinho.CarrinhoFragment"
         android:label="Carrinho"
         tools:layout="@layout/fragment_carrinho" />
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.login.main.home.HomeFragment"
+        android:name="com.QuickMenu.mobile.main.home.HomeFragment"
         android:label="Cardápio"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/notificacaoFragment"
-        android:name="com.example.login.main.notificacao.NotificacaoFragment"
+        android:name="com.QuickMenu.mobile.main.notificacao.NotificacaoFragment"
         android:label="Notificações"
         tools:layout="@layout/fragment_notificacao" />
 

@@ -1,10 +1,10 @@
-package com.example.login.main.carrinho
+package com.QuickMenu.mobile.main.carrinho
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.login.R
-import com.example.login.databinding.ItemCarrinhoBinding
+import com.QuickMenu.mobile.R
+import com.QuickMenu.mobile.databinding.ItemCarrinhoBinding
 
 class CarrinhoAdapter (private val itens: MutableList<ItemCarrinho>,
                        private val listener: CarrinhoActionsListener)

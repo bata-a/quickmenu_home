@@ -1,4 +1,4 @@
-package com.example.login.root
+package com.QuickMenu.mobile.root
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.example.login.auth.AuthActivity
+import com.QuickMenu.mobile.auth.AuthActivity
 
 class SplashActivity : AppCompatActivity() {
     private val SPLASH_TIME_OUT: Long = 3000L

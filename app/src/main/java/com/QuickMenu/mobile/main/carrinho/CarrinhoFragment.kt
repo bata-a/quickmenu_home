@@ -1,6 +1,5 @@
-package com.example.login.main.carrinho
+package com.QuickMenu.mobile.main.carrinho
 
-import android.content.Context // Import necessário para onAttach
 import android.icu.text.NumberFormat
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -11,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.login.databinding.FragmentCarrinhoBinding
+import com.QuickMenu.mobile.databinding.FragmentCarrinhoBinding
 import java.util.Locale
 
 // Interface para o Fragment avisar o Adapter sobre remoção

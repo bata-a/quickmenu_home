@@ -1,4 +1,4 @@
-package com.example.login.main.carrinho
+package com.QuickMenu.mobile.main.carrinho
 
 data class ItemCarrinho(
     val id: String,
