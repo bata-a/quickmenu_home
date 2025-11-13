@@ -7,7 +7,7 @@
 
     <activity
         android:id="@+id/splashActivity"
-        android:name="com.QuickMenu.mobile.main.SplashActivity"
+        android:name="com.QuickMenu.mobile.root.SplashActivity"
         android:label="Splash/Roteamento"
         tools:layout="@layout/activity_splash">
 

@@ -1,54 +1,49 @@
 package com.QuickMenu.mobile.root
 
-import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.QuickMenu.mobile.auth.AuthActivity
+import com.QuickMenu.mobile.R
+import androidx.navigation.findNavController
+import com.QuickMenu.mobile.databinding.ActivitySplashBinding
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 
 class SplashActivity : AppCompatActivity() {
-    private val SPLASH_TIME_OUT: Long = 3000L
-    private val handler = Handler(Looper.getMainLooper())
 
-    // VARIÁVEL DE CONTROLE
-    private var isReady = false
+    private lateinit var binding: ActivitySplashBinding
 
-    private val removeConditionCallback = Runnable {
-        isReady = true
-    }
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
+        installSplashScreen()
 
         super.onCreate(savedInstanceState)
 
-        /*splashScreen.setKeepOnScreenCondition { !isReady }
+        binding = ActivitySplashBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        handler.postDelayed({
+        auth = Firebase.auth
 
-            val nextActivityClass = AuthActivity::class.java
+        /*checkAuth()*/
 
-            val intent = Intent(this, nextActivityClass).apply {
-                // Flags para limpar a pilha (garante que não volte ao Splash)
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            }
 
-            // Inicia a próxima Activity
-            startActivity(intent)
-            isReady = true
-            finish()
+    }
 
-        }, SPLASH_TIME_OUT)
-        handler.postDelayed(removeConditionCallback, SPLASH_TIME_OUT)
-    }*/
-        val nextActivityClass = AuthActivity::class.java
-        val intent = Intent(this, nextActivityClass).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    private fun checkAuth(){
+
+        val navController = binding.main.findNavController()
+
+        val isUserLoggedIn = auth.currentUser != null
+
+        if(isUserLoggedIn){
+            navController.navigate(R.id.action_splash_to_main)
         }
-        startActivity(intent)
-        finish()
+        else{
+            navController.navigate(R.id.action_splash_to_auth)
+        }
+
     }
     override fun onDestroy() {
         super.onDestroy()
